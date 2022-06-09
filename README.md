@@ -3,28 +3,28 @@ Crypto Currency Exchange
 
 My Personal 2018 Project, put it up here for backup
 
-#altcoinchager.io technical details
+# altcoinchager.io technical details
 
 #Server Details
-OS: Ubuntu 16.04
-RAM: 8GB
-HDD: 120 GB
-CPU: 2vCPUs
-Server is provided by Digital Ocean
+OS: Ubuntu 16.04<br />
+RAM: 8GB<br />
+HDD: 120 GB<br />
+CPU: 2vCPUs<br />
+Server is provided by Digital Ocean<br />
 
-#Technologies Used
-The main exchange interface: Node JS + Express
-Admin Interface: PHP
-Database: MySQL
-Trade Matching Robot: Python
+# Technologies Used
+The main exchange interface: Node JS + Express<br />
+Admin Interface: PHP<br />
+Database: MySQL<br />
+Trade Matching Robot: Python<br />
 RPC Interfaces with wallets: Node JS
 
-#Security Features
-Email 2FA
-Google 2FA
-Email Notifications
-Hot & Cold Wallets
-SSL
-Anti-DDoS protection
+# Security Features
+Email 2FA<br />
+Google 2FA<br />
+Email Notifications<br />
+Hot & Cold Wallets<br />
+SSL<br />
+Anti-DDoS protection<br />
 
 
