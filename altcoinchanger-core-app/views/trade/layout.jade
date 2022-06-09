@@ -1,0 +1,39 @@
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/jumbotron.css')
+  body
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+      a.navbar-brand(href='#') Altcoin Changer
+
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarsExampleDefault', aria-controls='navbarsExampleDefault', aria-expanded='false', aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+
+      #navbarsExampleDefault.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='#') Markets
+
+          li.nav-item
+            a.nav-link(href='#') Wallets
+
+    main(role='main')
+      .jumbotron
+        .row
+          .col-md-2#markets-container
+            table.table.table-bordered.small-font
+              tr
+                td Name
+                td Price
+                td Ch.
+                td VoL.
+          .col-md-8
+          .col-md-2
+            ul#messages
+            form#chat_form
+              input#m(type='text')
+              input(type='submit',value='Send')
+            script(src='/socket.io/socket.io.js')
+            script(src='https://code.jquery.com/jquery-1.11.1.js')
+            script(src='/javascripts/trade.js')

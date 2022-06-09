@@ -1,0 +1,336 @@
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/jumbotron.css?ver=2')
+    link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
+    link(rel='stylesheet', href='/stylesheets/toastr.min.css')
+    link(rel="icon", type="image/x-icon", href="/images/favicon.ico")
+    link(rel="shortcut icon",type="image/x-icon",href="/images/favicon.ico")
+  body
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+      a.navbar-brand(href='#') Altcoin Changer
+
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarsExampleDefault', aria-controls='navbarsExampleDefault', aria-expanded='false', aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+
+      #navbarsExampleDefault.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='#') Markets
+
+          li.nav-item
+            if !logged_in
+              a.nav-link(href='#', onclick='showLoginModal()') Wallets
+            else
+              a.nav-link(href='/wallets') Wallets
+
+          li.nav-item
+            if !logged_in
+              a.nav-link(href='#', onclick='showLoginModal()') History
+            else
+              a.nav-link(href='/history') History
+        .my-2.my-lg-0
+          if !logged_in
+            ul.navbar-nav.mr-auto
+              li.nav-item
+                a.nav-link(href='#',data-toggle='modal',data-target='#registration-modal') Register
+
+              li.nav-item
+                a.nav-link(href='#',data-toggle='modal',data-target='#login-modal') Login
+          else
+            ul.navbar-nav.mr-auto
+              li.nav-item.dropdown.show
+                a.nav-link.dropdown-toggle(href="#", id="dropdown01", data-toggle="dropdown", aria-haspopup="true", aria-expanded="true")=username
+                .dropdown-menu(aria-labelledby="dropdown01")
+                  a.dropdown-item(href="#") Settings
+                  a.dropdown-item(href="/users/logout") Logout
+
+    main(role='main')
+      .jumbotron
+        .row
+          .col-md-2#markets-container
+            h3
+              span.fa.fa-line-chart &nbsp;Market
+            select#cur2-selector
+              option(value="BTC") BTC
+            table.small-font2.table-striped.table-bordered.tbl-open-orders
+              thead
+                tr
+                  th Name
+                  th Price
+                  th Ch.
+                  th VoL.
+              tbody#tbl-markets
+          .col-md-8
+            .row(style={"background-color": "#ffffff"})
+              .col-md-2
+                h3
+                  span= cur1
+                  span /
+                  span= cur2
+              .col-md-2(style={overflow: "hidden"})
+                span Last:&nbsp;
+                span#span-last 0.00000000
+              .col-md-2(style={overflow: "hidden"})
+                span 24High:&nbsp;
+                span#span-high 0.00000000
+              .col-md-2(style={overflow: "hidden"})
+                span 24Low:&nbsp;
+                span#span-low 0.00000000
+              .col-md-2(style={overflow: "hidden"})
+                span 24V:&nbsp;
+                span#span-vol 0.00000000
+            .row(style={"background-color": "#ffffff"})
+              .col-md-12
+                nav
+                  .nav.nav-tabs
+                    a.nav-item.nav-link.active(data-toggle="tab", href="#chart-price-chart") Price Chart
+                    a.nav-item.nav-link(data-toggle="tab", href="#chart-depth-chart") Depth Chart
+                .tab-content(style={"padding-top": "5px"})
+                  #chart-price-chart.tab-pane.fade.show.active
+                    button.btn-sm.btn-info.btn.chart-period(style={"margin-right":"5px","font-size":"65%"},"data-period"="12hr") 12 Hrs
+                    button.btn-sm.btn-default.btn.chart-period(style={"margin-right":"5px","font-size":"65%"},"data-period"="24hr") 24 Hrs
+                    button.btn-sm.btn-default.btn.chart-period(style={"margin-right":"5px","font-size":"65%"},"data-period"="1month") 1M
+                    button.btn-sm.btn-default.btn.chart-period(style={"font-size":"65%"},"data-period"="6month") 6M
+                    div#dv-live-chart(style={width:'100%', 'min-height':'200px'})
+                  #chart-depth-chart.tab-pane.fade
+                    div#dv-depth-chart(style={width:'100%', 'min-height':'200px'})
+            .row
+              .col-md-4.right-border
+                .row.bottom-border
+                  .col-md-12
+                    h4(style={"font-weight":"normal"})
+                      span Buy&nbsp;
+                      span= cur1
+                    form#frm-buy-order
+                      table.small-font.order-table
+                        tr
+                          td Balance
+                          td(align="right")
+                            span.cur2-balance 0.00000000
+                            span= cur2
+                        tr
+                          td Amount
+                          td
+                            .input-group
+                              input#buy-amount(name='amount')
+                              .input-group-append
+                                span.input-group-text= cur1
+                        tr
+                          td Price
+                          td
+                            .input-group
+                              input#buy-price(name='price')
+                              .input-group-append
+                                span.input-group-text= cur2
+                        tr
+                          td Total
+                          td
+                            .input-group
+                              input#buy-total(name='total')
+                              .input-group-append
+                                span.input-group-text= cur2
+                        tr
+                          td Fee (0.2%)
+                          td
+                            .input-group
+                              input#buy-fee(name='fee', disabled='true')
+                              .input-group-append
+                                span.input-group-text= cur2
+                        tr
+                          td Total + Fee
+                          td
+                            .input-group
+                              input#buy-gtotal(name='gtotal', disabled='true')
+                              .input-group-append
+                                span.input-group-text= cur2
+                        tr
+                          td(colspan=2)
+                            if logged_in
+                              button.btn.btn-success.small-font1#buy-btn Place Buy Order
+                            else
+                              button.btn.btn-success.small-font1(onclick="showLoginModal()",type="button") Please login to place order
+                .row
+                  .col-md-12
+                    h4(style={"font-weight":"normal"})
+                      span Sell Orders
+                    .open-orders-container
+                      table.small-font.tbl-open-orders.table-striped.table-bordered
+                        thead
+                          tr
+                            th Price
+                            th= cur1
+                            th= cur2
+                        tbody#tbl-open-sell-orders
+              .col-md-4.right-border
+                .row.bottom-border
+                  .col-md-12
+                    h4(style={"font-weight":"normal"})
+                      span Sell&nbsp;
+                      span= cur1
+                    form#frm-sell-order
+                      table.small-font.order-table
+                        tr
+                          td Balance
+                          td(align="right")
+                            span.cur1-balance 0.00000000
+                            span= cur1
+                        tr
+                          td Amount
+                          td
+                            .input-group
+                              input#sell-amount(name='amount')
+                              .input-group-append
+                                span.input-group-text= cur1
+                        tr
+                          td Price
+                          td
+                            .input-group
+                              input#sell-price(name='price')
+                              .input-group-append
+                                span.input-group-text= cur2
+                        tr
+                          td Total
+                          td
+                            .input-group
+                              input#sell-total(name='total')
+                              .input-group-append
+                                span.input-group-text= cur2
+                        tr
+                          td Fee (0.2%)
+                          td
+                            .input-group
+                              input#sell-fee(name='fee', disabled='true')
+                              .input-group-append
+                                span.input-group-text= cur2
+                        tr
+                          td Total - Fee
+                          td
+                            .input-group
+                              input#sell-gtotal(name='gtotal', disabled='true')
+                              .input-group-append
+                                span.input-group-text= cur2
+                        tr
+                          td(colspan=2)
+                            if logged_in
+                              button.btn.btn-info.small-font1#sell-btn Place Sell Order
+                            else
+                              button.btn.btn-info.small-font1(onclick="showLoginModal()", type="button") Please login to place order
+                .row
+                  .col-md-12.border-left.border-top
+                    h4(style={"font-weight":"normal"})
+                      span Buy Orders
+                    .open-orders-container
+                      table.small-font.tbl-open-orders.table-striped.table-bordered
+                        thead
+                          tr
+                            th Price
+                            th= cur1
+                            th= cur2
+                        tbody#tbl-open-buy-orders
+              .col-md-4
+                h4(style={"font-weight":"normal"})
+                  span History
+                .market-histor-container
+                  table.small-font.table-striped.table-bordered
+                    thead
+                      tr
+                        th Time
+                        th
+                        th Price
+                        th= cur1
+                    tbody#tbl-market-history
+          .col-md-2.left-border#right-container
+            h3
+              span.fa.fa-weixin &nbsp;Chat
+            #chat-container
+              #messages
+            form#chat_form
+              .row
+                .col-md-8.zero-padding
+                  input.form-control#chat-m(type='text')
+                .col-md-4
+                  input.btn.btn-info#chat-btn(type='submit',value='Send')
+              p.muted
+                small &copy; Altcoin Changer 2018
+          script.
+            var pair_id = #{curId};
+            var cur2 = '#{cur2}';
+            var cur1 = '#{cur1}';
+            var member_id = '#{member_id}';
+          script(src='/socket.io/socket.io.js')
+          script(src='https://code.jquery.com/jquery-1.11.1.js')
+          script(src='/javascripts/highstock.js')
+          script(src='/javascripts/drag-panes.js')
+          script(src='/javascripts/exporting.js')
+          script(src='/javascripts/toastr.min.js')
+          script(src='/javascripts/common.js')
+          script(src='/javascripts/trade.js')
+          script(src='/javascripts/bootstrap.min.js')
+          script(src='https://www.google.com/recaptcha/api.js')
+
+
+.modal#login-modal(tabindex='-1', role='dialog')
+  .modal-dialog(role='document',style={width: '400px'})
+    .modal-content
+      .modal-header
+        h5.modal-title Authorization
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+        span(aria-hidden='true') &times;
+      .modal-body
+        form#frm-login
+          p Email
+            input#login-email.form-control(type='email',name='email')
+
+          p Password
+            input#login-password.form-control(type='password',name='password')
+
+          .g-recaptcha(data-sitekey="6LdpI0gUAAAAAMlkpYIFQSHiM8jqOSt2q_rXQIgU")
+
+        .alert.alert-danger#dv-invalid-login(role="alert", style={display:"none"})
+          span Invalid login details
+        p.muted Have no account?
+            a(href='#', onclick='showRegistrationModal()') Register
+      .modal-footer
+
+        button#login-btn.btn.btn-primary(type='button') Log in
+        button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+
+
+.modal#registration-modal(tabindex='-1', role='dialog')
+  .modal-dialog(role='document',style={width: '400px'})
+    .modal-content
+      .modal-header
+        h5.modal-title Registration
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+        span(aria-hidden='true') &times;
+      .modal-body
+        form#frm-register
+          p Username
+            input#registration-username.form-control(type='text',name='username')
+
+          p Email
+            input#registration-email.form-control(type='email',name='email')
+
+          p Your Password
+            input#registration-password.form-control(type='password',name='password')
+
+          p Confirm Password
+            input#registration-password2.form-control(type='password')
+            span.text-danger#password-mismatch(style={display:"none"}) Passwords do not match
+
+          .g-recaptcha(data-sitekey="6LdpI0gUAAAAAMlkpYIFQSHiM8jqOSt2q_rXQIgU")
+
+        .alert.alert-danger#dv-invalid-registration(role="alert", style={display:"none"})
+          span Registration failed.
+          span#registration-error
+
+        .alert.alert-info#dv-registration-success(role="alert", style={display:"none"})
+          span Registration successful, you can now login.
+        p.muted Have an account already?
+            a(href='#', , onclick='showLoginModal()') Log in
+      .modal-footer
+
+        button#registration-btn.btn.btn-primary(type='button') Register
+        button.btn.btn-secondary(type='button', data-dismiss='modal') Close

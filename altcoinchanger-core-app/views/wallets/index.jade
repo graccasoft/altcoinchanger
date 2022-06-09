@@ -1,0 +1,172 @@
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/jumbotron.css')
+    link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
+    link(rel='stylesheet', href='/stylesheets/toastr.min.css')
+    link(rel="icon", type="image/x-icon", href="/images/favicon.ico")
+    link(rel="shortcut icon",type="image/x-icon",href="/images/favicon.ico")
+  body
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+      a.navbar-brand(href='#') Altcoin Changer
+
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarsExampleDefault', aria-controls='navbarsExampleDefault', aria-expanded='false', aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+
+      #navbarsExampleDefault.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item
+            a.nav-link(href='/trade') Markets
+
+          li.nav-item.active
+            a.nav-link(href='#') Wallets
+
+          li.nav-item
+            a.nav-link(href='/history') History
+        .my-2.my-lg-0
+          if !logged_in
+            ul.navbar-nav.mr-auto
+              li.nav-item
+                a.nav-link(href='#',data-toggle='modal',data-target='#registration-modal') Register
+
+              li.nav-item
+                a.nav-link(href='#',data-toggle='modal',data-target='#login-modal') Login
+          else
+            ul.navbar-nav.mr-auto
+              li.nav-item.dropdown.show
+                a.nav-link.dropdown-toggle(href="#", id="dropdown01", data-toggle="dropdown", aria-haspopup="true", aria-expanded="true")=username
+                .dropdown-menu(aria-labelledby="dropdown01")
+                  a.dropdown-item(href="#") Settings
+                  a.dropdown-item(href="/users/logout") Logout
+
+    main(role='main')
+      .jumbotron
+        .row
+          .col-md-2#markets-container
+            h3
+              span.fa.fa-line-chart &nbsp;Market
+            select#cur2-selector
+              option(value="BTC") BTC
+            table.small-font2.table-striped.table-bordered.tbl-open-orders
+              thead
+                tr
+                  th Name
+                  th Price
+                  th Ch.
+                  th VoL.
+              tbody#tbl-markets
+          .col-md-8
+            .row
+              .col-md-3
+                h3
+                  i.fa.fa-money
+                  span &nbsp;BALANCES
+              .col-md-6(style={"line-height": "1.6","font-size": "1.25rem"})
+                span Est. equivalent:
+                span.text-success#est-total 0.00000000
+                span.text-success BTC
+            .row
+              .col-md-12
+                table.table.table-striped.table-bordered.table-sm
+                  thead.thead-dark
+                    th Currency
+                    th Balance
+                    th Awaiting Deposit
+                    th Reserved in orders
+                    th Est.BTC
+                    th Deposit
+                    th Withdrawal
+                    th History
+                  tbody#tbl-wallets
+            .row
+              .col-md-6
+                h4 Pending Deposits
+                table.table.table-striped.table-bordered.table-sm
+                  thead
+                    th Date
+                    th Currency
+                    th Amount
+                    th Status
+                  tbody#tbl-pending-deposits
+
+              .col-md-6
+                h4 Pending Withdrawals
+                table.table.table-striped.table-bordered.table-sm
+                  thead
+                    th Date
+                    th Currency
+                    th Amount
+                    th Status
+          .col-md-2.left-border#right-container
+            h3
+              span.fa.fa-weixin &nbsp;Chat
+            #chat-container
+              #messages
+            form#chat_form
+              .row
+                .col-md-8.zero-padding
+                  input.form-control#chat-m(type='text')
+                .col-md-4
+                  input.btn.btn-info#chat-btn(type='submit',value='Send')
+              p.muted
+                small &copy; Altcoin Changer 2018
+          script.
+            var member_id = '#{member_id}';
+            var cur2 = 'BTC';
+          script(src='/socket.io/socket.io.js')
+          script(src='https://code.jquery.com/jquery-1.11.1.js')
+          script(src='/javascripts/toastr.min.js')
+          script(src='/javascripts/common.js')
+          script(src='/javascripts/wallets.js')
+          script(src='/javascripts/bootstrap.min.js')
+
+.modal#withdrawal-modal(tabindex='-1', role='dialog')
+  .modal-dialog(role='document',style={width: '400px'})
+    .modal-content
+      .modal-header
+        h5.modal-title#withdraw-title
+          span Withdraw
+          span.withdraw-currency
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+        span(aria-hidden='true') &times;
+      .modal-body
+        p Withdrawal address (ADDR)
+          input#withdraw-address.form-control(type='text')
+
+        p Quantity
+          span.withdraw-currency
+          input#withdraw-amount.form-control(type='number')
+
+        p Withdrawal Fee
+            span.withdraw-currency
+            input#withdraw-fee.form-control(type='text','disabled'='true')
+
+        p Obtain
+            span.withdraw-currency
+            input#withdraw-obtain.form-control(type='text','disabled'='true')
+
+        .alert.alert-danger#dv-invalid-withdrawal(role="alert", style={display:"none"})
+          span Insufficient balance
+
+        .alert.alert-danger#dv-invalid-withdrawal-details(role="alert", style={display:"none"})
+          span Invalid withdrawal amount or address
+
+      .modal-footer
+
+        button#withdraw-btn.btn.btn-primary(type='button') Withdraw Request
+        button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+
+.modal#deposit-modal(tabindex='-1', role='dialog')
+  .modal-dialog(role='document',style={width: '400px'})
+    .modal-content
+      .modal-header
+        h5.modal-title#deposit-title
+          span Deposit
+          span.deposit-currency
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+        span(aria-hidden='true') &times;
+      .modal-body#deposit-details
+        p#deposit-details-address
+        p
+          img#deposit-qr-code
