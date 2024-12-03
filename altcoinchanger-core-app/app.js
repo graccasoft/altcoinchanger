@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var request = require("request");
 
 var session = require('express-session')({
-  secret: 'l0tu5n0t35',
+  secret: '',
   resave: true,
   saveUninitialized: true,
   cookie: { secure: false }
