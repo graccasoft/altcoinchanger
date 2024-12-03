@@ -25,7 +25,7 @@ router.post('/login',function(req,res){
     return false;
   }
 
-  var secretKey = "6LdpI0gUAAAAABEMYE2i4EgE-oXY_LyKBIDrCwK-";
+  var secretKey = "";
 
   var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
 
@@ -84,7 +84,7 @@ router.post('/register',function(req,res){
     return false;
   }
 
-  var secretKey = "6LdpI0gUAAAAABEMYE2i4EgE-oXY_LyKBIDrCwK-";
+  var secretKey = "";
 
   var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
 
