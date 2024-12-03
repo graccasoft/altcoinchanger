@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var session = require('express-session')({
-  secret: 'l0tu5n0t35',
+  secret: '',
   resave: true,
   saveUninitialized: true,
   cookie: { secure: false }
